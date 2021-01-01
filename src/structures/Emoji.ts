@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 import Client from '../websocket';
 import { EmojiRaw } from './EmojiRaw';
 import { GuildRaw } from './GuildRaw';
@@ -28,10 +29,18 @@ export class Emoji {
             this.name = r.name || null;
             return r;
         };
-        this.delete = async () => {
-            const r = await client._deleteEmoji(this.guild.id, this.id);
-            return r;
-        };
-        return this;
+      } else {
+        this.url = () => this.name ? `https://twemoji.maxcdn.com/v/latest/72x72/${this.name.codePointAt(16).toString()}.png` : null;
+      }
+      this.rename = async (name:string) => {
+        const r = await client._modifyEmoji(this.guild.id, this.id, name, undefined);
+        this.name = r.name || null;
+        return r;
+      };
+      this.delete = async () => {
+        const r = await client._deleteEmoji(this.guild.id, this.id);
+        return r;
+      };
+      return this;
     }
 }
